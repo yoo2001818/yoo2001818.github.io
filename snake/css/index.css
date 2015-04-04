@@ -1,0 +1,30 @@
+.gameBox {
+  width: 64pt;
+  height: 64pt;
+  background-color: #ccc;
+  border-radius: 2pt;
+  text-align: center;
+  font-size: 24pt;
+  font-weight: bold;
+}
+
+.gameBox.box2 {
+  background-color: #ee9;
+  color: #663;
+}
+
+.gameBox.box4 {
+  background-color: #eb9;
+  color: #653;
+}
+
+.gameBox.box2 {
+  background-color: #ee9;
+  color: #663;
+}
+
+#gameMap {
+  border: 1pt;
+  background-color: #666;
+  border-radius: 2pt;
+}
