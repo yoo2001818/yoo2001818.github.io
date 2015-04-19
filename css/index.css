@@ -1,0 +1,225 @@
+@import url(http://fonts.googleapis.com/css?family=Noto+Sans);
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #444 url('../img/background_texture.png');
+  font-family: "Noto Sans", NanumGothic, "나눔고딕", "Malgun Gothic", "맑은 고딕", sans-serif;
+}
+
+#header {
+  background: #fff;
+  padding-top: 10pt;
+}
+
+.navigation {
+  background: #fff;
+  padding: 10pt;
+  z-index: 1024;
+}
+
+#navigation {
+  border-bottom: 3px solid #69ACFF;
+  box-shadow: 0px 4px 2px -2px #222; 
+}
+
+.desktop
+.mobile-only {
+  display: none;
+}
+
+.title .logo {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.title .logo img {
+  width: 100%;
+  max-width: 128pt;
+}
+
+.description {
+  margin-top: 6pt;
+  text-align: center;
+}
+
+.menu {
+  padding: 3pt;
+  text-align: center;
+  margin: 0;
+}
+
+.menu li {
+  display: inline-block;
+}
+
+.menu-entry {
+  display: block;
+  font-size: 15pt;
+  padding: 4pt 8pt;
+  margin: 2pt;
+  border: 1px #aaa solid;
+  border-radius: 3pt;
+  display: inline-block;
+  text-decoration: none;
+  color: #000;
+  background: #fff;
+  -webkit-transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	   -moz-transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	    -ms-transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	     -o-transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	        transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+}
+
+.menu-entry:hover {
+  color: #555;
+}
+
+.menu-selected .menu-entry {
+  border: 1px #69ACFF solid;
+  background: #B6E4FF;
+}
+
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media only screen and (max-width: 35.5em) {
+  #header {
+    padding-bottom: 3pt;
+  }
+  
+  .navigation {
+    padding: 3pt;
+  }
+  
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-only {
+    display: block;
+  }
+  
+  .menu {
+    padding: 0;
+  }
+  
+  .menu li {
+    display: block;
+  }
+  
+  .menu-entry {
+    padding: 6pt 10pt;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px #aaa solid;
+  }
+  
+  .menu-entry:last-child {
+    border: none; 
+  }
+}
+
+.big {
+  font-size: 32pt;
+}
+
+.medium {
+  font-size: 18pt;
+}
+
+.gray {
+  color: #999; 
+}
+
+.nickname {
+  text-indent: 2pt; 
+}
+
+#content {
+  color: #fff;
+  margin: 0 auto;
+  width: 90%;
+  min-width: 128pt;
+  max-width: 600pt;
+}
+
+a {
+  color: #444;
+}
+
+#content a {
+  color: #aaa;
+}
+
+#content h1 {
+  text-align: center; 
+  padding-bottom: 4pt;
+  border-bottom: 2px solid #aaa;
+  padding-left: 17pt;
+}
+
+.heading .anchor {
+  font-size: 12pt;
+  vertical-align: middle;
+  margin-left: 5pt;
+  text-decoration: none;
+  opacity: 0;
+  -webkit-transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	   -moz-transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	    -ms-transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	     -o-transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+	        transition: all 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+}
+
+.heading .anchor span {
+  color: #aaa;
+}
+
+.heading:hover .anchor {
+  opacity: 1;
+}
+
+.heading .anchor-key {
+  display: block;
+  position: relative;
+  top: -72pt;
+}
+
+#content pre {
+  background-color: #eee;
+  border: 2px solid #333;
+  color: #333;
+  padding: 10pt;
+  border-radius: 3pt;
+  overflow-x: auto;
+}
+
+#content ul {
+  list-style-type: square;
+}
+
+.chapter h1 {
+  text-align: center; 
+  padding-bottom: 4pt;
+  border-bottom: 2px solid #444;
+}
+
+#markdowndata {
+  display: none; 
+}
+
+#footer {
+  background: #fff;
+  text-align: center;
+  padding: 10pt;
+  margin-top: 6pt;
+  border-top: 3px solid #69ACFF;
+  box-shadow: 0px -4px 2px -2px #222; 
+}
