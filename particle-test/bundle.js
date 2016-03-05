@@ -48,7 +48,7 @@
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _factory$addControlle, _factory$addControlle2;
+	var _factory$addControlle, _factory$addControlle2, _factory$addControlle3;
 
 	var _engine = __webpack_require__(1);
 
@@ -87,11 +87,14 @@
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var UPDATE = 'store/update';
+	var MOUSE_MOVE = 'mouse/move';
 
 	var ADD_POS = 'pos/add';
 	var SET_POS = 'pos/set';
 	var ADD_VEL = 'vel/add';
 	var SET_VEL = 'vel/set';
+	var SET_RENDER = 'render/set';
+	var ADD_ROTATION = 'render/rotationAdd';
 
 	var factory = new _engine2.default();
 	// Setting state to raw object
@@ -104,38 +107,50 @@
 	  var entity = _event$data.entity;
 	  var x = _event$data.x;
 	  var y = _event$data.y;
+	  var z = _event$data.z;
 
 	  store.changes.unshift(ECSChanges.set(entity, 'pos', {
 	    x: entity.pos.x + x,
-	    y: entity.pos.y + y
+	    y: entity.pos.y + y,
+	    z: entity.pos.z + z
 	  }));
 	}), _defineProperty(_factory$addControlle, SET_POS, function (event, store) {
 	  var _event$data2 = event.data;
 	  var entity = _event$data2.entity;
 	  var x = _event$data2.x;
 	  var y = _event$data2.y;
+	  var z = _event$data2.z;
 
-	  store.changes.unshift(ECSChanges.set(entity, 'pos', { x: x, y: y }));
+	  store.changes.unshift(ECSChanges.set(entity, 'pos', { x: x, y: y, z: z }));
 	}), _factory$addControlle));
 	factory.addController('vel', (_factory$addControlle2 = {}, _defineProperty(_factory$addControlle2, ADD_VEL, function (event, store) {
 	  var _event$data3 = event.data;
 	  var entity = _event$data3.entity;
 	  var x = _event$data3.x;
 	  var y = _event$data3.y;
+	  var z = _event$data3.z;
 
 	  store.changes.unshift(ECSChanges.set(entity, 'vel', {
 	    x: entity.vel.x + x,
-	    y: entity.vel.y + y
+	    y: entity.vel.y + y,
+	    z: entity.vel.z + z
 	  }));
 	}), _defineProperty(_factory$addControlle2, SET_VEL, function (event, store) {
 	  var _event$data4 = event.data;
 	  var entity = _event$data4.entity;
 	  var x = _event$data4.x;
 	  var y = _event$data4.y;
+	  var z = _event$data4.z;
 
-	  store.changes.unshift(ECSChanges.set(entity, 'vel', { x: x, y: y }));
+	  store.changes.unshift(ECSChanges.set(entity, 'vel', { x: x, y: y, z: z }));
 	}), _factory$addControlle2));
-
+	factory.addController('render', (_factory$addControlle3 = {}, _defineProperty(_factory$addControlle3, SET_RENDER, function (event, store) {
+	  store.state.globals.render = event.data;
+	}), _defineProperty(_factory$addControlle3, ADD_ROTATION, function (event, store) {
+	  store.state.globals.render.rx = event.data.rx;
+	  store.state.globals.render.ry = event.data.ry;
+	  store.state.globals.render.rz = event.data.rz;
+	}), _factory$addControlle3));
 	// Then add systems
 	factory.addSystem('family', _familySystem2.default);
 	factory.addSystem('vel', (function () {
@@ -156,7 +171,8 @@
 	          store.changes.push(ADD_POS, {
 	            entity: entity,
 	            x: entity.vel.x * delta / 1000 * 60, // 60fps
-	            y: entity.vel.y * delta / 1000 * 60 // also 60fps
+	            y: entity.vel.y * delta / 1000 * 60, // also 60fps
+	            z: entity.vel.z * delta / 1000 * 60 // also 60fps
 	          });
 	        }
 	      });
@@ -183,7 +199,8 @@
 	          store.changes.push(ADD_VEL, {
 	            entity: entity,
 	            x: entity.gravity.x * delta / 1000 * 60, // 60fps
-	            y: entity.gravity.y * delta / 1000 * 60 // also 60fps
+	            y: entity.gravity.y * delta / 1000 * 60, // also 60fps
+	            z: entity.gravity.z * delta / 1000 * 60 // also 60fps
 	          });
 	        }
 	      });
@@ -207,7 +224,7 @@
 	        var pos = entity.pos;
 	        var boundary = entity.boundary;
 
-	        if (pos.x < boundary.x1 || pos.y < boundary.y1 || pos.x > boundary.x2 || pos.y > boundary.y2) {
+	        if (pos.x < boundary.x1 || pos.x > boundary.x2 || pos.y < boundary.y1 || pos.y > boundary.y2 || pos.z < boundary.z1 || pos.z > boundary.z2) {
 	          // Dispose the entity.
 	          store.changes.push(ECSChanges.entityRemove(entity));
 	        }
@@ -226,6 +243,11 @@
 	    key: 'onMount',
 	    value: function onMount(store) {
 	      this.store = store;
+	      store.state.globals.render = {
+	        x: 0, y: 0, z: 0,
+	        rx: 0, ry: 0, rz: 0,
+	        fl: 500
+	      };
 	      var entities = store.systems.family.get(['render', 'pos']).entities;
 	      var renderer = new _pixi2.default.WebGLRenderer(800, 600);
 	      document.body.appendChild(renderer.view);
@@ -237,12 +259,59 @@
 	      textures[3] = new _pixi2.default.Texture(baseTexture, new _pixi2.default.Rectangle(24, 24, 24, 24), new _pixi2.default.Rectangle(24, 24, 24, 24));
 	      // Pre-create sprites for the optimzation.
 	      var queue = new _linkedDeque2.default();
-	      var stage = new _pixi2.default.ParticleContainer();
+	      var stage = new _pixi2.default.ParticleContainer(1000, {
+	        // scale: true,
+	        position: true
+	      });
+	      // var stage = new PIXI.Container();
 	      for (var i = 0; i < 200; ++i) {
 	        var sprite = new _pixi2.default.Sprite(textures[i % 4]);
 	        queue.push(sprite);
 	        stage.addChild(sprite);
-	        sprite.position.x = -24;
+	        sprite.position.x = -48;
+	      }
+	      function zSort() {
+	        stage.children.sort(function (a, b) {
+	          if (a.zValue < b.zValue) return 1;
+	          if (a.zValue > b.zValue) return -1;
+	          return 0;
+	        });
+	      }
+	      function updatePos(entity, sprite) {
+	        // perspective projection...
+	        var props = store.state.globals.render;
+	        var x = entity.pos.x;
+	        var y = entity.pos.y;
+	        var z = entity.pos.z;
+
+	        var x1 = x,
+	            y1 = y,
+	            z1 = z;
+
+	        // rotation Y
+	        var cosY = Math.cos(props.ry);
+	        var sinY = Math.sin(props.ry);
+	        x1 = x * cosY - z * sinY;
+	        z1 = z * cosY + x * sinY;
+
+	        x = x1, z = z1;
+
+	        // rotaiton X
+	        var cosX = Math.cos(props.rx);
+	        var sinX = Math.sin(props.rx);
+	        y1 = y * cosX - z * sinX;
+	        z1 = z * cosX + y * sinX;
+
+	        y = y1, z = z1;
+
+	        var scale = props.fl / (props.fl + z);
+	        //sprite.scale.x = scale;
+	        //sprite.scale.y = scale;
+
+	        sprite.position.x = x * scale + 400 - 12 | 0;
+	        sprite.position.y = y * scale + 300 - 12 | 0;
+
+	        sprite.zValue = z;
 	      }
 	      var sprites = [];
 	      store.changes.on(ECSChanges.ENTITY_CREATE, function (change) {
@@ -252,8 +321,8 @@
 	          var sprite = queue.shift();
 	          if (sprite == null) return;
 	          sprites[entity.id] = sprite;
-	          sprite.position.x = entity.pos.x | 0;
-	          sprite.position.y = entity.pos.y | 0;
+	          updatePos(entity, sprite);
+	          //zSort();
 	        }
 	      });
 	      store.changes.on(ECSChanges.ENTITY_REMOVE, function (change) {
@@ -262,8 +331,20 @@
 	          var sprite = sprites[entity.id];
 	          if (sprite == null) return;
 	          // stage.removeChild(sprite);
+	          sprite.position.x = -48;
+	          sprite.scale.x = 1;
+	          sprite.scale.y = 1;
 	          queue.push(sprite);
 	          sprites[entity.id] = null;
+	        }
+	      });
+	      store.changes.on(ADD_ROTATION, function (change) {
+	        for (var _i = 0; _i < entities.length; ++_i) {
+	          var entity = entities[_i];
+	          var sprite = sprites[entity.id];
+	          if (sprite == null) return;
+	          updatePos(entity, sprite);
+	          //zSort();
 	        }
 	      });
 	      store.changes.on(ADD_POS, function (change) {
@@ -272,8 +353,8 @@
 	        if (entity.render && entity.pos) {
 	          var sprite = sprites[entity.id];
 	          if (sprite == null) return;
-	          sprite.position.x = entity.pos.x | 0;
-	          sprite.position.y = entity.pos.y | 0;
+	          updatePos(entity, sprite);
+	          //zSort();
 	        }
 	      });
 	      store.actions.on(UPDATE, function (action) {
@@ -283,12 +364,46 @@
 	          // ctx.fillStyle = entity.render.color;
 	          ctx.fillRect(entity.pos.x - 5 | 0, entity.pos.y - 5 | 0, 10, 10);
 	        }*/
+	        //zSort();
 	        renderer.render(stage);
 	      });
 	    }
 	  }]);
 
 	  return RenderSystem;
+	})());
+	factory.addSystem('mouse', (function () {
+	  function MouseRotationSystem() {
+	    _classCallCheck(this, MouseRotationSystem);
+	  }
+
+	  _createClass(MouseRotationSystem, [{
+	    key: 'onMount',
+	    value: function onMount(store) {
+	      this.store = store;
+	      var cursorX = 0;
+	      var cursorY = 0;
+	      store.actions.on(UPDATE, function (action) {
+	        var delta = action.payload.delta;
+	        /*store.changes.push(ADD_ROTATION, {
+	          ry: cursorX * delta / 1000,
+	          rx: cursorY * delta / 1000,
+	          rz: 0
+	        });*/
+	      });
+	      store.actions.on(MOUSE_MOVE, function (action) {
+	        cursorX = action.payload.x;
+	        cursorY = action.payload.y;
+	        store.changes.push(ADD_ROTATION, {
+	          ry: cursorX / 400 * Math.PI,
+	          rx: cursorY / 300 * Math.PI,
+	          rz: 0
+	        });
+	      });
+	    }
+	  }]);
+
+	  return MouseRotationSystem;
 	})());
 	factory.addSystem('spawner', (function () {
 	  function SpawnerSystem() {
@@ -306,9 +421,13 @@
 	          var entity = entities[i];
 	          store.changes.push(ECSChanges.entityCreate(undefined, {
 	            pos: entity.pos,
-	            vel: { x: Math.random() * 4 - 2, y: -6 * Math.random() - 2 },
-	            gravity: { x: 0, y: 0.03 * Math.random() + 0.05 },
-	            boundary: { x1: -24, y1: -24, x2: 800, y2: 600 },
+	            vel: {
+	              x: Math.random() * 4 - 2,
+	              y: -6 * Math.random() - 2,
+	              z: Math.random() * 4 - 2
+	            },
+	            gravity: { x: 0, y: 0.03 * Math.random() + 0.05, z: 0 },
+	            boundary: { x1: -412, y1: -312, x2: 412, y2: 312, z1: -412, z2: 412 },
 	            render: { color: '#000' }
 	          }));
 	        }
@@ -342,7 +461,7 @@
 	store.dispatch({
 	  type: 'passthrough',
 	  payload: ECSChanges.entityCreate(undefined, {
-	    pos: { x: 400, y: 400 },
+	    pos: { x: 0, y: 0, z: 0 },
 	    render: { color: '#000' },
 	    spawner: 1
 	  })
@@ -359,6 +478,15 @@
 	  });
 	  requestAnimationFrame(update);
 	}
+
+	window.addEventListener('mousemove', function (e) {
+	  store.dispatch({
+	    type: MOUSE_MOVE,
+	    payload: {
+	      x: e.clientX - 400, y: e.clientY - 300
+	    }
+	  });
+	});
 
 	update();
 
